@@ -2,4 +2,10 @@
     <string name="app_name">Baking</string>
 
     <string name="json_url">https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json</string>
+
+    <string name="EXTRA_NAME">extra_name</string>
+    <string name="EXTRA_RECIPE_INGREDIENTS">extra_recipe_ingredients</string>
+    <string name="EXTRA_RECIPE_STEPS">extra_recipe_steps</string>
+    <string name="EXTRA_SERVINGS">extra_servings</string>
+    <string name="title_activity_recipe">RecipeActivity</string>
 </resources>
