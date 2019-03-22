@@ -49,10 +49,16 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, RecipeActivity.class);
 
-        intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
-        intent.putExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
-        intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
-        intent.putExtra(getString(R.string.EXTRA_SERVINGS), mRecipes.get(clickedItemIndex).getServings());
+      //  intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
+      ////  intent.putStringArrayListExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
+      //  intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
+      //  intent.putExtra(getString(R.string.EXTRA_SERVINGS), mRecipes.get(clickedItemIndex).getServings());
+
+        String test = "" + clickedItemIndex;
+
+        Log.d("TEST", test);
+
+        intent.putExtra("TEST", test);
 
         startActivity(intent);
     }

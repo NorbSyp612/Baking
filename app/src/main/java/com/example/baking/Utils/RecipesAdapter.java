@@ -20,6 +20,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
     private static int viewHolderCount;
     private int numRecipes;
     private ArrayList<Recipe> recipes;
+    private Boolean fromMain;
 
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
@@ -30,6 +31,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
         onClickListener = onClick;
         this.recipes = recipesArray;
         viewHolderCount = 0;
+        fromMain = true;
+    }
+
+    public void setBooleanFromMain(Boolean fromWhere) {
+        fromMain = fromWhere;
     }
 
 
@@ -64,8 +70,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
         public NumberViewHolder(View itemView) {
 
             super(itemView);
-            recipeItemview = (TextView) itemView.findViewById(R.id.recipe_item);
-            itemView.setOnClickListener(this);
+
+            if (fromMain) {
+                recipeItemview = (TextView) itemView.findViewById(R.id.recipe_item);
+                itemView.setOnClickListener(this);
+            }
 
         }
 
