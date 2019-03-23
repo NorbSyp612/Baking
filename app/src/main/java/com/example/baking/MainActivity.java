@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     private RecipesAdapter mRecipesAdapter;
     private String mJsonResult;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

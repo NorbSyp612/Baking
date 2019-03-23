@@ -24,6 +24,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     private Recipe mRecipe;
     private RecyclerView mRecylerView;
     private RecipesAdapter mRecipeAdapter;
+    private String jsonResult;
+    private String jsonPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
 
         String position = intent.getStringExtra("TEST");
-        String jsonResult = intent.getStringExtra("TEST2");
+        jsonResult = intent.getStringExtra("TEST2");
         int pos = Integer.parseInt(position);
+        jsonPosition = "" + pos;
 
 
         mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
@@ -51,8 +54,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
         mRecylerView.setAdapter(mRecipeAdapter);
         mRecylerView.setHasFixedSize(true);
-
-
     }
 
     @Override
@@ -61,10 +62,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         ArrayList<RecipeSteps> steps = mRecipe.getRecipeSteps();
         String position = "" + clickedItemIndex;
+        String size = "" + (mRecipe.getRecipeSteps().size() - 1);
 
         intent.putExtra(getString(R.string.EXTRA_MEDIA), steps.get(clickedItemIndex).getVideoURL());
         intent.putExtra(getString(R.string.EXTRA_STEP_INSTRUCTION), steps.get(clickedItemIndex).getDescription());
         intent.putExtra(getString(R.string.EXTRA_STEP_NUM), position);
+        intent.putExtra(getString(R.string.EXTRA_SIZE), size);
+        intent.putExtra(getString(R.string.EXTRA_JSON_RESULT), jsonResult);
+        intent.putExtra(getString(R.string.EXTRA_JSON_POSITION), jsonPosition);
 
         startActivity(intent);
     }

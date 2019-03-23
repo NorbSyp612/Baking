@@ -10,7 +10,13 @@
     <string name="EXTRA_MEDIA">extra_media</string>
     <string name="EXTRA_STEP_INSTRUCTION">extra_step_instruction</string>
     <string name="EXTRA_STEP_NUM">extra_step_num</string>
+    <string name="EXTRA_SIZE">extra_size</string>
+    <string name="EXTRA_JSON_RESULT">json_result</string>
+    <string name="EXTRA_JSON_POSITION">json_position</string>
 
     <string name="title_activity_recipe">RecipeActivity</string>
     <string name="title_activity_step_detail">StepDetailActivity</string>
+
+    <string name="back_button">Previous Step</string>
+    <string name="next_button">Next Step</string>
 </resources>
