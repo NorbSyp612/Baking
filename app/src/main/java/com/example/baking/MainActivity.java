@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
         mRecipesList.setHasFixedSize(true);
 
 
+
     }
 
     @Override

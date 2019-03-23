@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeIngredients;
+import com.example.baking.Items.RecipeSteps;
 import com.example.baking.R;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
     private Recipe recipe;
     private Boolean fromMain;
     private ArrayList<RecipeIngredients> mIngredients;
+    private ArrayList<RecipeSteps> mSteps;
 
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
@@ -43,6 +45,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
         onClickListener = onClick;
         recipe = viewRecipe;
         mIngredients = recipe.getRecipeIngredients();
+        mSteps = recipe.getRecipeSteps();
         viewHolderCount = 0;
         fromMain = false;
     }
@@ -58,60 +61,76 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
         } else {
             layoutID = R.layout.recipe_ingredients;
         }
-            LayoutInflater inflater = LayoutInflater.from(context);
-            boolean shouldAttachToParentImmediately = false;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
 
-            View view = inflater.inflate(layoutID, viewGroup, shouldAttachToParentImmediately);
-            NumberViewHolder viewHolder = new NumberViewHolder(view);
+        View view = inflater.inflate(layoutID, viewGroup, shouldAttachToParentImmediately);
+        NumberViewHolder viewHolder = new NumberViewHolder(view);
 
-            viewHolderCount++;
-            return viewHolder;
+        viewHolderCount++;
+        return viewHolder;
+    }
+
+    @Override
+    public int getItemCount() {
+        return numRecipes;
+    }
+
+    @Override
+    public void onBindViewHolder(NumberViewHolder holder, int i) {
+        holder.bind(i);
+    }
+
+    class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        TextView recipeItemview;
+        TextView recipeIngredients;
+
+        public NumberViewHolder(View itemView) {
+
+            super(itemView);
+
+            if (fromMain) {
+                recipeItemview = (TextView) itemView.findViewById(R.id.recipe_item);
+                itemView.setOnClickListener(this);
+            } else {
+                recipeIngredients = (TextView) itemView.findViewById(R.id.recipe_ingreds);
+            }
+
         }
 
         @Override
-        public int getItemCount () {
-            return numRecipes;
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            onClickListener.onListItemClick(clickedPosition);
+            Log.d("TEST", "clicked on " + clickedPosition);
         }
 
-        @Override
-        public void onBindViewHolder (NumberViewHolder holder,int i){
-            holder.bind(i);
-        }
+        void bind(int listIndex) {
 
-        class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            if (fromMain) {
+                recipeItemview.setText(recipes.get(listIndex).getName());
+            } else {
+                String ingredientsString = "Ingredients: \n\n";
 
-            TextView recipeItemview;
-            TextView recipeIngredients;
+                Log.d("TEST", "list index is " + listIndex);
 
-            public NumberViewHolder(View itemView) {
+                if (listIndex == 0) {
+                    for (int i = 0; i < mIngredients.size(); i++) {
+                        ingredientsString = ingredientsString + "-" + mIngredients.get(i).getQuantity() + mIngredients.get(i).getMeasure() + " " + mIngredients.get(i).getIngredient();
+                        if (i + 1 < mIngredients.size()) {
+                            ingredientsString = ingredientsString + "\n";
+                        }
+                    }
 
-                super(itemView);
-
-                if (fromMain) {
-                    recipeItemview = (TextView) itemView.findViewById(R.id.recipe_item);
-                    itemView.setOnClickListener(this);
+                    recipeIngredients.setText(ingredientsString);
                 } else {
-                    Log.d("TEST", "initializing recipeingredients");
-                    recipeIngredients = (TextView) itemView.findViewById(R.id.recipe_ingreds);
-                }
-
-            }
-
-            @Override
-            public void onClick(View v) {
-                int clickedPosition = getAdapterPosition();
-                onClickListener.onListItemClick(clickedPosition);
-            }
-
-            void bind(int listIndex) {
-                if (fromMain) {
-                    recipeItemview.setText(recipes.get(listIndex).getName());
-                } else {
-                    String ing = mIngredients.get(0).getIngredient();
-                    recipeIngredients.setText(ing);
+                    recipeIngredients.setText(mSteps.get(listIndex).getShortDescription());
+                    recipeIngredients.setOnClickListener(this);
                 }
             }
         }
     }
+}
 
 

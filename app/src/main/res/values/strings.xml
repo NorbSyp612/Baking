@@ -7,5 +7,10 @@
     <string name="EXTRA_RECIPE_INGREDIENTS">extra_recipe_ingredients</string>
     <string name="EXTRA_RECIPE_STEPS">extra_recipe_steps</string>
     <string name="EXTRA_SERVINGS">extra_servings</string>
+    <string name="EXTRA_MEDIA">extra_media</string>
+    <string name="EXTRA_STEP_INSTRUCTION">extra_step_instruction</string>
+    <string name="EXTRA_STEP_NUM">extra_step_num</string>
+
     <string name="title_activity_recipe">RecipeActivity</string>
+    <string name="title_activity_step_detail">StepDetailActivity</string>
 </resources>
