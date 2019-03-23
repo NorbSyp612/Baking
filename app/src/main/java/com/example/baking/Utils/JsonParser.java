@@ -24,9 +24,14 @@ public class JsonParser {
     private Context mContext;
     private String TAG = JsonParser.class.toString();
     private URL mUrl;
+    private String result;
 
     public JsonParser(Context context) {
         mContext = context;
+    }
+
+    public String getResult(){
+        return result;
     }
 
     public ArrayList<Recipe> parseJson() {
@@ -57,6 +62,8 @@ public class JsonParser {
             if (jsonResult == null) {
                 return recipes;
             }
+
+            result = jsonResult;
 
             JSONArray jRecipes = new JSONArray(jsonResult);
 
@@ -120,6 +127,76 @@ public class JsonParser {
 
 
         return recipes;
+    }
+
+    public Recipe parseJsonForRecipe(String jsonResult, int position) {
+        Recipe addRecipe = new Recipe();
+
+        try {
+
+            if (jsonResult == null) {
+                return addRecipe;
+            }
+
+            JSONArray jRecipes = new JSONArray(jsonResult);
+
+                ArrayList<RecipeIngredients> listOfIngredients = new ArrayList<>();
+                ArrayList<RecipeSteps> listOfSteps = new ArrayList<>();
+                JSONObject recipe = jRecipes.getJSONObject(position);
+
+                String recipeID = recipe.getString("id");
+                String recipeName = recipe.getString("name");
+                String recipeServings = recipe.getString("servings");
+
+                JSONArray jIngredients = recipe.getJSONArray("ingredients");
+                for (int a = 0; a < jIngredients.length(); a++) {
+                    RecipeIngredients addIngredients = new RecipeIngredients();
+                    JSONObject ingredients = jIngredients.getJSONObject(a);
+
+                    String quantity = ingredients.getString("quantity");
+                    String measure = ingredients.getString("measure");
+                    String ingredient = ingredients.getString("ingredient");
+
+                    addIngredients.setQuantity(quantity);
+                    addIngredients.setMeasure(measure);
+                    addIngredients.setIngredient(ingredient);
+
+                    listOfIngredients.add(addIngredients);
+                }
+
+                JSONArray jSteps = recipe.getJSONArray("steps");
+                for (int b = 0; b < jSteps.length(); b++) {
+                    RecipeSteps addSteps = new RecipeSteps();
+                    JSONObject steps = jSteps.getJSONObject(b);
+
+                    String stepId = steps.getString("id");
+                    String shortDescrption = steps.getString("shortDescription");
+                    String descrption = steps.getString("description");
+                    String videoURL = steps.getString("videoURL");
+                    String thumbnailURL = steps.getString("thumbnailURL");
+
+                    addSteps.setId(stepId);
+                    addSteps.setShortDescription(shortDescrption);
+                    addSteps.setDescription(descrption);
+                    addSteps.setVideoURL(videoURL);
+                    addSteps.setThumbnailURL(thumbnailURL);
+
+                    listOfSteps.add(addSteps);
+                }
+
+                addRecipe.setId(recipeID);
+                addRecipe.setName(recipeName);
+                addRecipe.setServings(recipeServings);
+                addRecipe.setRecipeIngredients(listOfIngredients);
+                addRecipe.setRecipeSteps(listOfSteps);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return addRecipe;
     }
 
     public static class getJsonString extends AsyncTask<URL, Void, String> {

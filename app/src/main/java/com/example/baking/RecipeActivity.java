@@ -34,12 +34,13 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         Context context = getApplicationContext();
 
         JsonParser jsonParser = new JsonParser(getApplicationContext());
-        mRecipes = jsonParser.parseJson();
+
 
         String position = intent.getStringExtra("TEST");
+        String jsonResult = intent.getStringExtra("TEST2");
         int pos = Integer.parseInt(position);
 
-        mRecipe = mRecipes.get(pos);
+        mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
 
         mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);

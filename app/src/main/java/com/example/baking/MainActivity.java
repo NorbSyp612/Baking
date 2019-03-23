@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     private ArrayList<Recipe> mRecipes;
     private RecyclerView mRecipesList;
     private RecipesAdapter mRecipesAdapter;
+    private String mJsonResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
 
         JsonParser jsonParser = new JsonParser(getApplicationContext());
         mRecipes = jsonParser.parseJson();
+        mJsonResult = jsonParser.getResult();
 
         Log.d("TEST", "Recipe size " + mRecipes.size());
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, RecipeActivity.class);
 
+
       //  intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
       ////  intent.putStringArrayListExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
       //  intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
         Log.d("TEST", test);
 
         intent.putExtra("TEST", test);
+        intent.putExtra("TEST2", mJsonResult);
 
         startActivity(intent);
     }
