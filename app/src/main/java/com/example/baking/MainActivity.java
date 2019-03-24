@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     private RecyclerView mRecipesList;
     private RecipesAdapter mRecipesAdapter;
     private String mJsonResult;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -39,12 +41,16 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
         Log.d("TEST", "Recipe size " + mRecipes.size());
 
         mRecipesList = (RecyclerView) findViewById(R.id.recipe_RecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        if (getResources().getBoolean(R.bool.Tablet_Check)) {
+            Log.d("TEST", "This is a TABLET!");
+            layoutManager = new GridLayoutManager(context, 3);
+        } else {
+            layoutManager = new LinearLayoutManager(context);
+        }
         mRecipesList.setLayoutManager(layoutManager);
         mRecipesAdapter = new RecipesAdapter(mRecipes.size(), this, mRecipes);
         mRecipesList.setAdapter(mRecipesAdapter);
         mRecipesList.setHasFixedSize(true);
-
 
 
     }
@@ -54,10 +60,10 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
         Intent intent = new Intent(this, RecipeActivity.class);
 
 
-      //  intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
-      ////  intent.putStringArrayListExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
-      //  intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
-      //  intent.putExtra(getString(R.string.EXTRA_SERVINGS), mRecipes.get(clickedItemIndex).getServings());
+        //  intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
+        ////  intent.putStringArrayListExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
+        //  intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
+        //  intent.putExtra(getString(R.string.EXTRA_SERVINGS), mRecipes.get(clickedItemIndex).getServings());
 
         String test = "" + clickedItemIndex;
 
