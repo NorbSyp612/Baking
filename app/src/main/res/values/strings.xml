@@ -14,6 +14,8 @@
     <string name="EXTRA_JSON_RESULT">json_result</string>
     <string name="EXTRA_JSON_POSITION">json_position</string>
 
+    <string name="BUNDLE_MPOSITION">bundle_mposition</string>
+
     <string name="title_activity_recipe">RecipeActivity</string>
     <string name="title_activity_step_detail">StepDetailActivity</string>
 

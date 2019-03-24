@@ -1,6 +1,7 @@
 package com.example.baking;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
@@ -80,7 +81,11 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
 
         Log.d("TEST", "SIZE IS " + size);
 
-        mPosition = Integer.parseInt(position);
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.BUNDLE_MPOSITION))) {
+            mPosition = savedInstanceState.getInt(getString(R.string.BUNDLE_MPOSITION));
+        } else {
+            mPosition = Integer.parseInt(position);
+        }
         Log.d("TEST", "CURRENT POSITION IS :" + mPosition);
         mSize = Integer.parseInt(size);
 
@@ -94,7 +99,18 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
         mStepView.setText(step);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(getString(R.string.BUNDLE_MPOSITION), mPosition);
+    }
+
     private void populateUI() {
+
+        int orientation = getResources().getConfiguration().orientation;
+        mStepView.setVisibility(View.VISIBLE);
+        mNextButton.setVisibility(View.VISIBLE);
+        mBackButton.setVisibility(View.VISIBLE);
 
         if (!mRecipeSteps.get(mPosition).getVideoURL().isEmpty()) {
             if (mExoPlayer != null) {
@@ -102,6 +118,12 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
             }
             mPlayerView.setVisibility(View.VISIBLE);
             startPlayer(Uri.parse(mRecipeSteps.get(mPosition).getVideoURL()));
+
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mStepView.setVisibility(View.INVISIBLE);
+                mNextButton.setVisibility(View.INVISIBLE);
+                mBackButton.setVisibility(View.INVISIBLE);
+            }
         } else {
             mPlayerView.setVisibility(View.GONE);
         }
@@ -176,6 +198,25 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            if (!playWhenReady) {
+                mNextButton.setVisibility(View.VISIBLE);
+                mBackButton.setVisibility(View.VISIBLE);
+                Log.d("TEST", "SHOULD BE PAUSED");
+            } else {
+                mNextButton.setVisibility(View.INVISIBLE);
+                mBackButton.setVisibility(View.INVISIBLE);
+            }
+
+            if (playbackState == mExoPlayer.STATE_ENDED) {
+                mNextButton.setVisibility(View.VISIBLE);
+                mBackButton.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 
