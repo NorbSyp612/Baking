@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,26 +36,29 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        Intent intent = getIntent();
+        Context context = getApplicationContext();
+
+        JsonParser jsonParser = new JsonParser(getApplicationContext());
+
+
+        String position = intent.getStringExtra("TEST");
+        jsonResult = intent.getStringExtra("TEST2");
+        int pos = Integer.parseInt(position);
+        jsonPosition = "" + pos;
+
+
+        mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
+
+        int numberOfHolders = mRecipe.getRecipeSteps().size();
+
+
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
-
+            Log.d("TEST", "TABLET FROM RECIPE ACTIVITY");
+            mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
+            FragmentManager fragmentManager = getSupportFragmentManager();
         } else {
-
-            Intent intent = getIntent();
-            Context context = getApplicationContext();
-
-            JsonParser jsonParser = new JsonParser(getApplicationContext());
-
-
-            String position = intent.getStringExtra("TEST");
-            jsonResult = intent.getStringExtra("TEST2");
-            int pos = Integer.parseInt(position);
-            jsonPosition = "" + pos;
-
-
-            mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
-
-            int numberOfHolders = mRecipe.getRecipeSteps().size();
-
+            Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
             mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
             LinearLayoutManager layoutManager = new LinearLayoutManager(context);
             mRecylerView.setLayoutManager(layoutManager);

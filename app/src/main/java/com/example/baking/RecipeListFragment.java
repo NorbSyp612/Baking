@@ -8,7 +8,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import com.example.baking.Items.Recipe;
 import com.example.baking.Utils.JsonParser;
 import com.example.baking.Utils.RecipesAdapter;
 
-public class RecipeListFragment extends Fragment {
+public class RecipeListFragment extends Fragment implements RecipesAdapter.ListItemClickListener {
 
 
     public RecipeListFragment() {
@@ -26,9 +28,19 @@ public class RecipeListFragment extends Fragment {
 
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Log.d("TEST", "ATTACH");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.activity_recipe, container, false);
+        Log.d("TEST", "DOING FRAGMENT");
+
+        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         int defaultInt = getResources().getInteger(R.integer.INT_KEY);
@@ -41,12 +53,20 @@ public class RecipeListFragment extends Fragment {
 
         int numberOfHolders = recipe.getRecipeSteps().size();
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recipe_RecyclerView2);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recipe_RecyclerView3);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
-        RecipesAdapter recipesAdapter = new RecipesAdapter(numberOfHolders, (RecipesAdapter.ListItemClickListener) this, recipe);
+        RecipesAdapter recipesAdapter = new RecipesAdapter(numberOfHolders, this, recipe);
 
         recyclerView.setAdapter(recipesAdapter);
+        recyclerView.setHasFixedSize(true);
 
         return rootView;
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
     }
 }
