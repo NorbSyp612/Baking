@@ -2,7 +2,10 @@ package com.example.baking;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,28 +35,33 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
-        Intent intent = getIntent();
-        Context context = getApplicationContext();
+        if (getResources().getBoolean(R.bool.Tablet_Check)) {
 
-        JsonParser jsonParser = new JsonParser(getApplicationContext());
+        } else {
 
+            Intent intent = getIntent();
+            Context context = getApplicationContext();
 
-        String position = intent.getStringExtra("TEST");
-        jsonResult = intent.getStringExtra("TEST2");
-        int pos = Integer.parseInt(position);
-        jsonPosition = "" + pos;
+            JsonParser jsonParser = new JsonParser(getApplicationContext());
 
 
-        mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
+            String position = intent.getStringExtra("TEST");
+            jsonResult = intent.getStringExtra("TEST2");
+            int pos = Integer.parseInt(position);
+            jsonPosition = "" + pos;
 
-        int numberOfHolders = mRecipe.getRecipeSteps().size();
 
-        mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        mRecylerView.setLayoutManager(layoutManager);
-        mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
-        mRecylerView.setAdapter(mRecipeAdapter);
-        mRecylerView.setHasFixedSize(true);
+            mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
+
+            int numberOfHolders = mRecipe.getRecipeSteps().size();
+
+            mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            mRecylerView.setLayoutManager(layoutManager);
+            mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
+            mRecylerView.setAdapter(mRecipeAdapter);
+            mRecylerView.setHasFixedSize(true);
+        }
     }
 
     @Override

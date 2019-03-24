@@ -21,4 +21,8 @@
 
     <string name="back_button">Previous Step</string>
     <string name="next_button">Next Step</string>
+
+    <string name="PREF_JSON">pref_json</string>
+    <string name="PREF_JSON_DEFAULT"></string>
+    <string name="PREF_KEY_CLICKED">pref_key</string>
 </resources>

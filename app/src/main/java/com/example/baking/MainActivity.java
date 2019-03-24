@@ -2,6 +2,8 @@ package com.example.baking;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -59,13 +61,15 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, RecipeActivity.class);
 
-
-        //  intent.putExtra(getString(R.string.EXTRA_NAME), mRecipes.get(clickedItemIndex).getName());
-        ////  intent.putStringArrayListExtra(getString(R.string.EXTRA_RECIPE_INGREDIENTS), mRecipes.get(clickedItemIndex).getRecipeIngredients());
-        //  intent.putExtra(getString(R.string.EXTRA_RECIPE_STEPS), mRecipes.get(clickedItemIndex).getRecipeSteps());
-        //  intent.putExtra(getString(R.string.EXTRA_SERVINGS), mRecipes.get(clickedItemIndex).getServings());
-
         String test = "" + clickedItemIndex;
+
+        if (getResources().getBoolean(R.bool.Tablet_Check)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(getString(R.string.PREF_KEY_CLICKED), clickedItemIndex);
+            editor.putString(getString(R.string.PREF_JSON), mJsonResult);
+            editor.apply();
+        }
 
         Log.d("TEST", test);
 
