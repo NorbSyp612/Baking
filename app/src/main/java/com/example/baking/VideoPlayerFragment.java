@@ -37,9 +37,6 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     public VideoPlayerFragment() {
     }
 
-    public void testFromRecipeActivity() {
-        Log.d("TEST", "IT WORKS");
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +44,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_video_player);
+        setViewGone();
 
         return rootView;
     }

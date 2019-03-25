@@ -34,8 +34,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     private String jsonResult;
     private String jsonPosition;
     private VideoPlayerFragment videoPlayerFragment;
-    private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
+    private InstructionsFragment instructionsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +64,18 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             FragmentManager fragmentManager = getSupportFragmentManager();
 
             videoPlayerFragment = new VideoPlayerFragment();
+            instructionsFragment = new InstructionsFragment();
 
             fragmentManager.beginTransaction()
                     .add(R.id.exoplayer_container, videoPlayerFragment)
                     .commit();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.instructions_container, instructionsFragment)
+                    .commit();
+
+
+
         } else {
             Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
             mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
@@ -78,6 +85,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             mRecylerView.setAdapter(mRecipeAdapter);
             mRecylerView.setHasFixedSize(true);
         }
+
+        //instructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(0).getDescription());
     }
 
     @Override
@@ -108,5 +117,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             Log.d("TEST", "Clearing player");
             videoPlayerFragment.setViewGone();
         }
+
+        instructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
     }
 }
