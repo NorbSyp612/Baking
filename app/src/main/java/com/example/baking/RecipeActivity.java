@@ -57,6 +57,12 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             Log.d("TEST", "TABLET FROM RECIPE ACTIVITY");
             mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
             FragmentManager fragmentManager = getSupportFragmentManager();
+
+            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.exoplayer_container, videoPlayerFragment)
+                    .commit();
         } else {
             Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
             mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
