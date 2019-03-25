@@ -103,7 +103,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             onClickListener.onListItemClick(clickedPosition);
-            Log.d("TEST", "clicked on " + clickedPosition);
         }
 
         void bind(int listIndex) {

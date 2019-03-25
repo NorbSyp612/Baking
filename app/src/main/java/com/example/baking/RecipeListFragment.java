@@ -22,16 +22,26 @@ import com.example.baking.Utils.RecipesAdapter;
 
 public class RecipeListFragment extends Fragment implements RecipesAdapter.ListItemClickListener {
 
+    onListItemClickListener mCallback;
+
 
     public RecipeListFragment() {
     }
 
 
+    public interface onListItemClickListener {
+        void onListItemSelected(int position);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.d("TEST", "ATTACH");
+        try {
+            mCallback = (onListItemClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnImageClickListenner");
+        }
     }
 
     @Override
@@ -67,6 +77,6 @@ public class RecipeListFragment extends Fragment implements RecipesAdapter.ListI
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-
+        mCallback.onListItemSelected(clickedItemIndex);
     }
 }

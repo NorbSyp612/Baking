@@ -3,6 +3,7 @@ package com.example.baking;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -20,16 +21,21 @@ import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeSteps;
 import com.example.baking.Utils.JsonParser;
 import com.example.baking.Utils.RecipesAdapter;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import java.util.ArrayList;
 
-public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener {
+public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener, RecipeListFragment.onListItemClickListener {
 
     private Recipe mRecipe;
     private RecyclerView mRecylerView;
     private RecipesAdapter mRecipeAdapter;
     private String jsonResult;
     private String jsonPosition;
+    private VideoPlayerFragment videoPlayerFragment;
+    private SimpleExoPlayer mExoPlayer;
+    private SimpleExoPlayerView mPlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
             FragmentManager fragmentManager = getSupportFragmentManager();
 
-            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+            videoPlayerFragment = new VideoPlayerFragment();
 
             fragmentManager.beginTransaction()
                     .add(R.id.exoplayer_container, videoPlayerFragment)
@@ -90,5 +96,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         intent.putExtra(getString(R.string.EXTRA_JSON_POSITION), jsonPosition);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onListItemSelected(int position) {
+        String media = mRecipe.getRecipeSteps().get(position).getVideoURL();
+
+        if (!media.isEmpty()) {
+            videoPlayerFragment.startPlayer(Uri.parse(media));
+        } else {
+            Log.d("TEST", "Clearing player");
+            videoPlayerFragment.setViewGone();
+        }
     }
 }

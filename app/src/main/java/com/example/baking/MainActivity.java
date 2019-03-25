@@ -78,4 +78,6 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
 
         startActivity(intent);
     }
+
+
 }
