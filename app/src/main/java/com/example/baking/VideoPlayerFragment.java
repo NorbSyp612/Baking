@@ -33,6 +33,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
+    private Uri mMediaUri;
 
     public VideoPlayerFragment() {
     }
@@ -44,12 +45,31 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_video_player);
-        setViewGone();
+
+        if (savedInstanceState != null) {
+            String mediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
+            Long mediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
+
+            mMediaUri = Uri.parse(mediaString);
+            startPlayer(mMediaUri);
+            mExoPlayer.seekTo(mediaPosition);
+        } else {
+            setViewGone();
+        }
 
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaUri.toString());
+        outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mExoPlayer.getCurrentPosition());
+        super.onSaveInstanceState(outState);
+    }
+
     public void startPlayer(Uri mediaUri) {
+        mMediaUri = mediaUri;
+
         mPlayerView.setVisibility(View.VISIBLE);
         releasePlayer();
         if (mExoPlayer == null) {
@@ -84,7 +104,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest) {
-
+        Log.d("TEST", "timeline changed: " + timeline);
     }
 
     @Override
@@ -99,6 +119,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        Log.d("TEST", "Playwhenready is: " + playWhenReady + " and playbackstate is : " + playbackState);
 
     }
 

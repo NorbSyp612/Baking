@@ -25,4 +25,8 @@
     <string name="PREF_JSON">pref_json</string>
     <string name="PREF_JSON_DEFAULT"></string>
     <string name="PREF_KEY_CLICKED">pref_key</string>
+
+    <string name="INSTRUC_FRAG_OUT_TEXT">instruc_frag_out_text</string>
+    <string name="VIDEO_FRAG_OUT_URI">video_frag_out_uri</string>
+    <string name="VIDEO_FRAG_OUT_POSITION">video_frag_out_position</string>
 </resources>
