@@ -15,7 +15,6 @@ public class InstructionsFragment extends Fragment {
 
     private TextView mTextView;
     private String mText;
-    private boolean isMedia;
 
     public InstructionsFragment() {
 
@@ -27,7 +26,7 @@ public class InstructionsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_instructions, container, false);
 
         mTextView = (TextView) rootView.findViewById(R.id.fragment_ingredients);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
             mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
             mTextView.setText(mText);
         } else {
@@ -37,14 +36,14 @@ public class InstructionsFragment extends Fragment {
         return rootView;
     }
 
-    public boolean setMedia(boolean media) {
-
-
-    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
         super.onSaveInstanceState(outState);
+    }
+
+    public void clear() {
+        mText = null;
     }
 
     public void setInstructions(String text) {

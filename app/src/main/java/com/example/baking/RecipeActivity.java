@@ -116,8 +116,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         } else {
             Log.d("TEST", "Clearing player");
             videoPlayerFragment.setViewGone();
+            videoPlayerFragment.clearStates();
         }
 
+        instructionsFragment.clear();
         instructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
     }
 }

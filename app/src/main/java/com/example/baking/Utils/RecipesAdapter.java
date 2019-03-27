@@ -112,7 +112,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
             } else {
                 String ingredientsString = "Ingredients: \n\n";
 
-                Log.d("TEST", "list index is " + listIndex);
 
                 if (listIndex == 0) {
                     for (int i = 0; i < mIngredients.size(); i++) {
