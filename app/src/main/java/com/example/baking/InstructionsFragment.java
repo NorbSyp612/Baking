@@ -26,11 +26,15 @@ public class InstructionsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_instructions, container, false);
 
         mTextView = (TextView) rootView.findViewById(R.id.fragment_ingredients);
+
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
             mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
+        }
+
+        if (mText != null) {
             mTextView.setText(mText);
         } else {
-            mTextView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.INVISIBLE);
         }
 
         return rootView;
@@ -48,10 +52,5 @@ public class InstructionsFragment extends Fragment {
 
     public void setInstructions(String text) {
         mText = text;
-
-        if (!text.isEmpty()) {
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(text);
-        }
     }
 }

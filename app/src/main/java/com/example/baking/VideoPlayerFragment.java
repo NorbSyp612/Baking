@@ -44,6 +44,8 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Log.d("TEST", "OnCreate Video Frag");
+
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_video_player);
@@ -52,12 +54,23 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
             mMediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
             mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
             Log.d("TEST", "Restoring saved instance: " + mMediaString + " " + mMediaPosition);
-            startPlayer(Uri.parse(mMediaString));
+            mMediaUri = (Uri.parse(mMediaString));
+        }
+
+        if (mMediaUri != null) {
+            startPlayer(mMediaUri);
+            if (mMediaPosition != null) {
+                mExoPlayer.seekTo(mMediaPosition);
+            }
         } else {
             setViewGone();
         }
 
         return rootView;
+    }
+
+    public void setMediaUri(Uri uri) {
+        mMediaUri = uri;
     }
 
     public void clearStates() {
@@ -78,11 +91,9 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     public void startPlayer(Uri mediaUri) {
 
-        mMediaUri = mediaUri;
-
         mPlayerView.setVisibility(View.VISIBLE);
-        releasePlayer();
         if (mExoPlayer == null) {
+            Log.d("TEST", "Starting new player");
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
@@ -96,10 +107,20 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
             );
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+        } else {
+            Log.d("TEST", "Changing media in player");
+            String userAgent = Util.getUserAgent(getContext(), "Baking");
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null
+            );
+            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.setPlayWhenReady(true);
         }
     }
 
+
     public void releasePlayer() {
+        Log.d("TEST", "Releasing Player");
         if (mExoPlayer != null) {
             mExoPlayer.stop();
             mExoPlayer.release();
@@ -108,7 +129,6 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     }
 
     public void setViewGone() {
-        releasePlayer();
         mPlayerView.setVisibility(View.GONE);
     }
 
@@ -144,6 +164,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     @Override
     public void onDestroy() {
+        Log.d("TEST", "onDestroy");
         super.onDestroy();
         if (mExoPlayer != null) {
             releasePlayer();

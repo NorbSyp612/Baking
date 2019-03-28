@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeSteps;
@@ -35,11 +36,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     private String jsonPosition;
     private VideoPlayerFragment videoPlayerFragment;
     private InstructionsFragment instructionsFragment;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+
+        Log.d("TEST", "On Create RecipeActivity");
 
         Intent intent = getIntent();
         Context context = getApplicationContext();
@@ -58,35 +62,29 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         int numberOfHolders = mRecipe.getRecipeSteps().size();
 
 
-        if (getResources().getBoolean(R.bool.Tablet_Check)) {
-            Log.d("TEST", "TABLET FROM RECIPE ACTIVITY");
-            mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
-            FragmentManager fragmentManager = getSupportFragmentManager();
+        if (savedInstanceState == null) {
+            if (getResources().getBoolean(R.bool.Tablet_Check)) {
+                Log.d("TEST", "TABLET FROM RECIPE ACTIVITY");
+                mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
+                mFragmentManager = getSupportFragmentManager();
 
-            videoPlayerFragment = new VideoPlayerFragment();
-            instructionsFragment = new InstructionsFragment();
+                videoPlayerFragment = new VideoPlayerFragment();
+                instructionsFragment = new InstructionsFragment();
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.exoplayer_container, videoPlayerFragment)
-                    .commit();
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.instructions_container, instructionsFragment)
-                    .commit();
-
-
-
-        } else {
-            Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
-            mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-            mRecylerView.setLayoutManager(layoutManager);
-            mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
-            mRecylerView.setAdapter(mRecipeAdapter);
-            mRecylerView.setHasFixedSize(true);
+                mFragmentManager.beginTransaction()
+                        .add(R.id.exoplayer_container, videoPlayerFragment)
+                        .add(R.id.instructions_container, instructionsFragment)
+                        .commit();
+            } else {
+                Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
+                mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+                mRecylerView.setLayoutManager(layoutManager);
+                mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
+                mRecylerView.setAdapter(mRecipeAdapter);
+                mRecylerView.setHasFixedSize(true);
+            }
         }
-
-        //instructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(0).getDescription());
     }
 
     @Override
@@ -109,17 +107,39 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
     @Override
     public void onListItemSelected(int position) {
+        FrameLayout videoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+        videoFrame.setVisibility(View.VISIBLE);
+
         String media = mRecipe.getRecipeSteps().get(position).getVideoURL();
 
+        VideoPlayerFragment newVideoFragment = new VideoPlayerFragment();
+        InstructionsFragment newInstructionsFragment = new InstructionsFragment();
+
+        newInstructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
+
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.beginTransaction()
+                .replace(R.id.exoplayer_container, newVideoFragment)
+                .replace(R.id.instructions_container, newInstructionsFragment)
+                .commit();
+
         if (!media.isEmpty()) {
-            videoPlayerFragment.startPlayer(Uri.parse(media));
+            newVideoFragment.setMediaUri(Uri.parse(media));
         } else {
-            Log.d("TEST", "Clearing player");
-            videoPlayerFragment.setViewGone();
-            videoPlayerFragment.clearStates();
+            mFragmentManager.beginTransaction()
+                    .remove(newVideoFragment)
+                    .commit();
+            videoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+            videoFrame.setVisibility(View.GONE);
         }
 
-        instructionsFragment.clear();
-        instructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("TEST", "RecipeActivity Destroyed");
     }
 }
