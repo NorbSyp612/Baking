@@ -73,11 +73,6 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         mMediaUri = uri;
     }
 
-    public void clearStates() {
-        mMediaUri = null;
-        mExoPlayer = null;
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (mMediaUri != null) {

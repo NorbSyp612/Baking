@@ -29,4 +29,5 @@
     <string name="INSTRUC_FRAG_OUT_TEXT">instruc_frag_out_text</string>
     <string name="VIDEO_FRAG_OUT_URI">video_frag_out_uri</string>
     <string name="VIDEO_FRAG_OUT_POSITION">video_frag_out_position</string>
+    <string name="RECIPE_ACT_OUT_POSITION">recipe_act_out_position</string>
 </resources>

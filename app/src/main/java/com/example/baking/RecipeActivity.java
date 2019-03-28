@@ -37,11 +37,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     private VideoPlayerFragment videoPlayerFragment;
     private InstructionsFragment instructionsFragment;
     private FragmentManager mFragmentManager;
+    private FrameLayout mVideoFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+
+        mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
 
         Log.d("TEST", "On Create RecipeActivity");
 
@@ -84,6 +87,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 mRecylerView.setAdapter(mRecipeAdapter);
                 mRecylerView.setHasFixedSize(true);
             }
+        } else {
+            mVideoFrame.setVisibility(View.GONE);
         }
     }
 
@@ -107,14 +112,16 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
     @Override
     public void onListItemSelected(int position) {
-        FrameLayout videoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
-        videoFrame.setVisibility(View.VISIBLE);
+
+        mVideoFrame.setVisibility(View.VISIBLE);
 
         String media = mRecipe.getRecipeSteps().get(position).getVideoURL();
 
         VideoPlayerFragment newVideoFragment = new VideoPlayerFragment();
         InstructionsFragment newInstructionsFragment = new InstructionsFragment();
 
+
+        newVideoFragment.setMediaUri(Uri.parse(media));
         newInstructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
 
         mFragmentManager = getSupportFragmentManager();
@@ -123,19 +130,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 .replace(R.id.instructions_container, newInstructionsFragment)
                 .commit();
 
-        if (!media.isEmpty()) {
-            newVideoFragment.setMediaUri(Uri.parse(media));
-        } else {
+        if (media.isEmpty()) {
             mFragmentManager.beginTransaction()
                     .remove(newVideoFragment)
                     .commit();
-            videoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
-            videoFrame.setVisibility(View.GONE);
+            mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+            mVideoFrame.setVisibility(View.GONE);
         }
-
-
-
     }
+
 
     @Override
     protected void onDestroy() {

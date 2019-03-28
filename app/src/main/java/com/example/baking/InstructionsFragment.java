@@ -46,10 +46,6 @@ public class InstructionsFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public void clear() {
-        mText = null;
-    }
-
     public void setInstructions(String text) {
         mText = text;
     }
