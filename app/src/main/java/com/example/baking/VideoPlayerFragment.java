@@ -78,6 +78,19 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         }
     }
 
+    public void setPlayerPoisition(Long position) {
+        mMediaPosition = position;
+    }
+
+    public Long getPlayerPosition() {
+        if (mExoPlayer != null) {
+            return mExoPlayer.getCurrentPosition();
+        } else {
+            return null;
+        }
+
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (mMediaUri != null) {
