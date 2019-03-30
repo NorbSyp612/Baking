@@ -41,7 +41,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
     }
 
     public RecipesAdapter(int numHolders, ListItemClickListener onClick, Recipe viewRecipe) {
-        numRecipes = numHolders;
+        numRecipes = numHolders+1;
         onClickListener = onClick;
         recipe = viewRecipe;
         mIngredients = recipe.getRecipeIngredients();
@@ -123,7 +123,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
 
                     recipeIngredients.setText(ingredientsString);
                 } else {
-                    recipeIngredients.setText(mSteps.get(listIndex).getShortDescription());
+                    recipeIngredients.setText(mSteps.get(listIndex-1).getShortDescription());
                     recipeIngredients.setOnClickListener(this);
                 }
             }

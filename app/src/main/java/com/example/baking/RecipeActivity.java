@@ -87,8 +87,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 mRecylerView.setAdapter(mRecipeAdapter);
                 mRecylerView.setHasFixedSize(true);
             }
-        } else {
-            mVideoFrame.setVisibility(View.GONE);
         }
     }
 
@@ -115,14 +113,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         mVideoFrame.setVisibility(View.VISIBLE);
 
-        String media = mRecipe.getRecipeSteps().get(position).getVideoURL();
+        String media = mRecipe.getRecipeSteps().get(position-1).getVideoURL();
 
         VideoPlayerFragment newVideoFragment = new VideoPlayerFragment();
         InstructionsFragment newInstructionsFragment = new InstructionsFragment();
 
 
         newVideoFragment.setMediaUri(Uri.parse(media));
-        newInstructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position).getDescription());
+        newInstructionsFragment.setInstructions(mRecipe.getRecipeSteps().get(position-1).getDescription());
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()

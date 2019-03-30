@@ -70,7 +70,12 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     }
 
     public void setMediaUri(Uri uri) {
-        mMediaUri = uri;
+        if (uri.toString().isEmpty()) {
+            Log.d("TEST", "Setting media uri to null");
+            mMediaUri = null;
+        } else {
+            mMediaUri = uri;
+        }
     }
 
     @Override
@@ -125,6 +130,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     public void setViewGone() {
         mPlayerView.setVisibility(View.GONE);
+        Log.d("TEST", "setting view gone");
     }
 
 
