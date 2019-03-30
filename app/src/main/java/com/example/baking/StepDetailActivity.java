@@ -52,6 +52,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     private JsonParser jsonParser;
     private Recipe recipe;
     private ArrayList<RecipeSteps> mRecipeSteps;
+    private Long mMediaPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,26 +87,30 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
         } else {
             mPosition = Integer.parseInt(position);
         }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_POSITION))) {
+            mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
+        }
+
         Log.d("TEST", "CURRENT POSITION IS :" + mPosition);
         mSize = Integer.parseInt(size);
 
-
-        if (!media.isEmpty()) {
-            startPlayer(Uri.parse(media));
-        } else {
-            mPlayerView.setVisibility(View.GONE);
-        }
-
-        mStepView.setText(step);
+        populateUI();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(getString(R.string.BUNDLE_MPOSITION), mPosition);
+        if (mExoPlayer != null) {
+            mMediaPosition = mExoPlayer.getCurrentPosition();
+            outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
+        }
     }
 
     private void populateUI() {
+
+        Log.d("TEST", "populating UI with position: " + mPosition);
 
         int orientation = getResources().getConfiguration().orientation;
         mStepView.setVisibility(View.VISIBLE);
@@ -119,12 +124,17 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
             mPlayerView.setVisibility(View.VISIBLE);
             startPlayer(Uri.parse(mRecipeSteps.get(mPosition).getVideoURL()));
 
+            if (mMediaPosition != null) {
+                mExoPlayer.seekTo(mMediaPosition);
+            }
+
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 mStepView.setVisibility(View.INVISIBLE);
                 mNextButton.setVisibility(View.INVISIBLE);
                 mBackButton.setVisibility(View.INVISIBLE);
             }
         } else {
+            releasePlayer();
             mPlayerView.setVisibility(View.GONE);
         }
 
@@ -134,13 +144,14 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
 
     public void backPress(View view) {
 
-        if (mPosition == 1) {
+        if (mPosition == 0) {
             Toast.makeText(this, "This is the first step", Toast.LENGTH_SHORT).show();
         }
 
-        if (mPosition > 1) {
+        if (mPosition > 0) {
             mPosition--;
             Log.d("TEST", "Position is now: " + mPosition);
+            mMediaPosition = null;
             populateUI();
         }
 
@@ -148,11 +159,12 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     }
 
     public void nextPress(View view) {
-        if (mPosition == (mRecipeSteps.size() - 1)) {
+        if (mPosition == (mRecipeSteps.size()) - 1) {
             Toast.makeText(this, "This is the final step", Toast.LENGTH_SHORT).show();
         } else {
             mPosition++;
             Log.d("TEST", "Position is now " + mPosition);
+            mMediaPosition = null;
             populateUI();
         }
     }
@@ -176,9 +188,11 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     }
 
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
     @Override

@@ -136,24 +136,30 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
-        mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
-        if (mMediaPosition != null) {
-            outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
+        if (getResources().getBoolean(R.bool.Tablet_Check)) {
+            outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
+            mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
+            if (mMediaPosition != null) {
+                outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
+            }
+            outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
         }
-        outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, StepDetailActivity.class);
 
-        ArrayList<RecipeSteps> steps = mRecipe.getRecipeSteps();
-        String position = "" + clickedItemIndex;
-        String size = "" + (mRecipe.getRecipeSteps().size() - 1);
+        int index = clickedItemIndex -1;
 
-        intent.putExtra(getString(R.string.EXTRA_MEDIA), steps.get(clickedItemIndex).getVideoURL());
-        intent.putExtra(getString(R.string.EXTRA_STEP_INSTRUCTION), steps.get(clickedItemIndex).getDescription());
+        Log.d("TEST", "clicked item index is: " + index);
+
+        ArrayList<RecipeSteps> steps = mRecipe.getRecipeSteps();
+        String position = "" + index;
+        String size = "" + (mRecipe.getRecipeSteps().size());
+
+        intent.putExtra(getString(R.string.EXTRA_MEDIA), steps.get(index).getVideoURL());
+        intent.putExtra(getString(R.string.EXTRA_STEP_INSTRUCTION), steps.get(index).getDescription());
         intent.putExtra(getString(R.string.EXTRA_STEP_NUM), position);
         intent.putExtra(getString(R.string.EXTRA_SIZE), size);
         intent.putExtra(getString(R.string.EXTRA_JSON_RESULT), jsonResult);
