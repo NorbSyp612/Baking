@@ -20,6 +20,8 @@ import com.example.baking.Items.Recipe;
 import com.example.baking.Utils.JsonParser;
 import com.example.baking.Utils.RecipesAdapter;
 
+import timber.log.Timber;
+
 public class RecipeListFragment extends Fragment implements RecipesAdapter.ListItemClickListener {
 
     onListItemClickListener mCallback;
@@ -47,7 +49,7 @@ public class RecipeListFragment extends Fragment implements RecipesAdapter.ListI
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.d("TEST", "DOING FRAGMENT");
+        Timber.d("Creating RecipeListFragment");
 
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 

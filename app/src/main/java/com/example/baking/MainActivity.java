@@ -20,6 +20,8 @@ import com.example.baking.Utils.RecipesAdapter;
 import java.net.URL;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener {
 
     private ArrayList<Recipe> mRecipes;
@@ -36,15 +38,17 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
 
         Context context = this;
 
+        Timber.plant(new Timber.DebugTree());
+
         JsonParser jsonParser = new JsonParser(getApplicationContext());
         mRecipes = jsonParser.parseJson();
         mJsonResult = jsonParser.getResult();
 
-        Log.d("TEST", "Recipe size " + mRecipes.size());
+        Timber.d("Recipe size %s", mRecipes.size());
 
         mRecipesList = (RecyclerView) findViewById(R.id.recipe_RecyclerView);
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
-            Log.d("TEST", "This is a TABLET!");
+            Timber.d("This is a TABLET!");
             layoutManager = new GridLayoutManager(context, 3);
         } else {
             layoutManager = new LinearLayoutManager(context);
@@ -61,20 +65,11 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, RecipeActivity.class);
 
-        String test = "" + clickedItemIndex;
-
-        if (getResources().getBoolean(R.bool.Tablet_Check)) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(getString(R.string.PREF_KEY_CLICKED), clickedItemIndex);
-            editor.putString(getString(R.string.PREF_JSON), mJsonResult);
-            editor.apply();
-        }
-
-        Log.d("TEST", test);
-
-        intent.putExtra("TEST", test);
-        intent.putExtra("TEST2", mJsonResult);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(getString(R.string.PREF_KEY_CLICKED), clickedItemIndex);
+        editor.putString(getString(R.string.PREF_JSON), mJsonResult);
+        editor.apply();
 
         startActivity(intent);
     }

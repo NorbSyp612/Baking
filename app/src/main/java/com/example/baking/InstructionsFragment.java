@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
+import timber.log.Timber;
+
 public class InstructionsFragment extends Fragment {
 
     private TextView mTextView;
@@ -29,6 +31,7 @@ public class InstructionsFragment extends Fragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
             mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
+            Timber.d("Restoring saved instance state");
         }
 
         if (mText != null) {

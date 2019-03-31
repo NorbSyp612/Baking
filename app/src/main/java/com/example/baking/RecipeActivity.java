@@ -27,6 +27,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener, RecipeListFragment.onListItemClickListener {
 
     private Recipe mRecipe;
@@ -50,19 +52,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
 
-        Log.d("TEST", "On Create RecipeActivity");
+        Timber.d("On Create RecipeActivity");
 
-        Intent intent = getIntent();
         Context context = getApplicationContext();
 
-        JsonParser jsonParser = new JsonParser(getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
+        JsonParser jsonParser = new JsonParser(context);
 
-        String position = intent.getStringExtra("TEST");
-        jsonResult = intent.getStringExtra("TEST2");
-        int pos = Integer.parseInt(position);
-        jsonPosition = "" + pos;
-
+        jsonResult = sharedPreferences.getString(getString(R.string.PREF_JSON), getString(R.string.PREF_JSON_DEFAULT));
+        int pos = sharedPreferences.getInt(getString(R.string.PREF_KEY_CLICKED), 0);
+        jsonPosition = pos + "";
 
         mRecipe = jsonParser.parseJsonForRecipe(jsonResult, pos);
 
@@ -71,7 +71,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         if (savedInstanceState == null) {
             if (getResources().getBoolean(R.bool.Tablet_Check)) {
-                Log.d("TEST", "TABLET FROM RECIPE ACTIVITY");
+                Timber.d( "TABLET FROM RECIPE ACTIVITY");
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
                 mFragmentManager = getSupportFragmentManager();
 
@@ -83,7 +83,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                         .add(R.id.instructions_container, newInstructionsFragment)
                         .commit();
             } else {
-                Log.d("TEST", "NOT TABLET FROM RECIPE ACTIVITY");
+                Timber.d("NOT TABLET FROM RECIPE ACTIVITY");
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(context);
                 mRecylerView.setLayoutManager(layoutManager);
@@ -152,7 +152,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         int index = clickedItemIndex -1;
 
-        Log.d("TEST", "clicked item index is: " + index);
+        Timber.d( "clicked item index is: " + index);
 
         ArrayList<RecipeSteps> steps = mRecipe.getRecipeSteps();
         String position = "" + index;
@@ -170,6 +170,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
     @Override
     public void onListItemSelected(int position) {
+
+        Timber.d("Clicked item index is: " + position);
 
         mVideoFrame.setVisibility(View.VISIBLE);
 
@@ -202,6 +204,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TEST", "RecipeActivity Destroyed");
+        Timber.d( "RecipeActivity Destroyed");
     }
 }

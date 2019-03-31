@@ -39,6 +39,8 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.EventListener {
 
     private SimpleExoPlayer mExoPlayer;
@@ -80,7 +82,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
         recipe = jsonParser.parseJsonForRecipe(jsonResult, jsonPos);
         mRecipeSteps = recipe.getRecipeSteps();
 
-        Log.d("TEST", "SIZE IS " + size);
+        Timber.d("Size is %s", size);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.BUNDLE_MPOSITION))) {
             mPosition = savedInstanceState.getInt(getString(R.string.BUNDLE_MPOSITION));
@@ -92,7 +94,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
             mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
         }
 
-        Log.d("TEST", "CURRENT POSITION IS :" + mPosition);
+        Timber.d("Current position is: %s", mPosition);
         mSize = Integer.parseInt(size);
 
         populateUI();
@@ -110,7 +112,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
 
     private void populateUI() {
 
-        Log.d("TEST", "populating UI with position: " + mPosition);
+        Timber.d("Populating UI with position: %s", mPosition);
 
         int orientation = getResources().getConfiguration().orientation;
         mStepView.setVisibility(View.VISIBLE);
@@ -145,12 +147,12 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     public void backPress(View view) {
 
         if (mPosition == 0) {
-            Toast.makeText(this, "This is the first step", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.BACK_FIRST_STEP), Toast.LENGTH_SHORT).show();
         }
 
         if (mPosition > 0) {
             mPosition--;
-            Log.d("TEST", "Position is now: " + mPosition);
+            Timber.d("Position is now: %s", mPosition);
             mMediaPosition = null;
             populateUI();
         }
@@ -160,10 +162,10 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
 
     public void nextPress(View view) {
         if (mPosition == (mRecipeSteps.size()) - 1) {
-            Toast.makeText(this, "This is the final step", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.NEXT_FINAL_STEP), Toast.LENGTH_SHORT).show();
         } else {
             mPosition++;
-            Log.d("TEST", "Position is now " + mPosition);
+            Timber.d( "Position is now %s", mPosition);
             mMediaPosition = null;
             populateUI();
         }
@@ -220,7 +222,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
             if (!playWhenReady) {
                 mNextButton.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
-                Log.d("TEST", "SHOULD BE PAUSED");
+                Timber.d("Player is paused.");
             } else {
                 mNextButton.setVisibility(View.INVISIBLE);
                 mBackButton.setVisibility(View.INVISIBLE);

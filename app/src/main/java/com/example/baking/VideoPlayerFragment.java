@@ -29,6 +29,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import timber.log.Timber;
+
 public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventListener {
 
     private SimpleExoPlayer mExoPlayer;
@@ -44,7 +46,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.d("TEST", "OnCreate Video Frag");
+        Timber.d("OnCreate Video Frag");
 
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
 
@@ -53,7 +55,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_POSITION)) && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
             mMediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
             mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
-            Log.d("TEST", "Restoring saved instance: " + mMediaString + " " + mMediaPosition);
+            Timber.d("Restoring saved instance");
             mMediaUri = (Uri.parse(mMediaString));
         }
 
@@ -71,7 +73,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     public void setMediaUri(Uri uri) {
         if (uri.toString().isEmpty()) {
-            Log.d("TEST", "Setting media uri to null");
+            Timber.d("Setting media uri to null");
             mMediaUri = null;
         } else {
             mMediaUri = uri;
@@ -95,7 +97,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     public void onSaveInstanceState(Bundle outState) {
         if (mMediaUri != null) {
             outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaUri.toString());
-            Log.d("TEST", "VideoFrag putting out: " + mMediaUri);
+            Timber.d("VideoFrag putting out: %s", mMediaUri);
         }
         if (mExoPlayer != null) {
             outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mExoPlayer.getCurrentPosition());
@@ -106,7 +108,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
         mPlayerView.setVisibility(View.VISIBLE);
         if (mExoPlayer == null) {
-            Log.d("TEST", "Starting new player");
+            Timber.d("Starting new player");
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
@@ -121,7 +123,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
         } else {
-            Log.d("TEST", "Changing media in player");
+            Timber.d("Changing media in player");
             String userAgent = Util.getUserAgent(getContext(), "Baking");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null
@@ -133,7 +135,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
 
     public void releasePlayer() {
-        Log.d("TEST", "Releasing Player");
+        Timber.d("Releasing Player");
         if (mExoPlayer != null) {
             mExoPlayer.stop();
             mExoPlayer.release();
@@ -143,7 +145,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     public void setViewGone() {
         mPlayerView.setVisibility(View.GONE);
-        Log.d("TEST", "setting view gone");
+        Timber.d("setting view gone");
     }
 
 
@@ -178,7 +180,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     @Override
     public void onDestroy() {
-        Log.d("TEST", "onDestroy");
+        Timber.d("onDestroy");
         super.onDestroy();
         if (mExoPlayer != null) {
             releasePlayer();

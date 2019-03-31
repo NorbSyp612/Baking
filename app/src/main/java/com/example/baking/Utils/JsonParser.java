@@ -19,10 +19,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import timber.log.Timber;
+
 public class JsonParser {
 
     private Context mContext;
-    private String TAG = JsonParser.class.toString();
     private URL mUrl;
     private String result;
 
@@ -41,7 +42,6 @@ public class JsonParser {
         try {
             mUrl = new URL(urlString);
         } catch (MalformedURLException e) {
-            Log.d(TAG, "Exception: " + e);
         }
 
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
