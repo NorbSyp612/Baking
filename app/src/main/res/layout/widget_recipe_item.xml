@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/widget_recipe_item"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_height="50dp"
+        android:textAlignment="center"
+        android:background="@drawable/border"
+        android:textColor="@color/colorText_Icons"
+        tools:text="Test Recipe Hello"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

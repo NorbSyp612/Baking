@@ -1,8 +1,0 @@
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="200dp"
-    android:minHeight="200dp"
-    android:previewImage="@drawable/ic_launcher_background"
-    android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen">
-
-</appwidget-provider>
