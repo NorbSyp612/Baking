@@ -1,5 +1,6 @@
 package com.example.baking;
 
+import android.content.Context;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -15,6 +16,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
@@ -26,13 +28,30 @@ public class MainActivityTest {
 
     public static final String First_Recipe = "Brownies";
 
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+
     @Test
     public void checkFirst() {
-     //   onData(anything()).inAdapterView(withId(R.id.recipe_RecyclerView)).atPosition(1).perform(click());
         onView(withId(R.id.recipe_RecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-     //   onData(anything()).inAdapterView(withId(R.id.recipe_RecyclerView2)).atPosition(1).perform(click());
+        if (getResources().getBoolean(R.bool.Tablet_Check))
+        onView(withId(R.id.recipe_RecyclerView3)).perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));
+    }
+
+    @Test
+    public void checkSecond() {
+        onView(withId(R.id.recipe_RecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+    }
+
+    @Test
+    public void checkThird() {
+        onView(withId(R.id.recipe_RecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(2, click()));
+    }
+
+    @Test
+    public void checkFourth() {
+        onView(withId(R.id.recipe_RecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));
     }
 }
