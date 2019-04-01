@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeSteps;
@@ -24,6 +25,7 @@ import com.example.baking.Utils.JsonParser;
 import com.example.baking.Utils.RecipesAdapter;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     private String mMediaString;
     private Long mMediaPosition;
     private String mText;
+    private ImageView mThumbnail;
+    String mThumbnailURL;
 
 
     @Override
@@ -71,7 +75,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         if (savedInstanceState == null) {
             if (getResources().getBoolean(R.bool.Tablet_Check)) {
-                Timber.d( "TABLET FROM RECIPE ACTIVITY");
+
+                mThumbnail = (ImageView) findViewById(R.id.instructions_thumbnail);
+                Timber.d("TABLET FROM RECIPE ACTIVITY");
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
                 mFragmentManager = getSupportFragmentManager();
 
@@ -93,6 +99,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             }
         } else {
             if (getResources().getBoolean(R.bool.Tablet_Check)) {
+
+                mThumbnail = (ImageView) findViewById(R.id.instructions_thumbnail);
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
                 mFragmentManager = getSupportFragmentManager();
 
@@ -104,6 +112,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 }
                 if (savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
                     mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
+                }
+
+                if (savedInstanceState.containsKey(getString(R.string.EXTRA_THUMB))) {
+                    mThumbnailURL = savedInstanceState.getString(getString(R.string.EXTRA_THUMB));
+                }
+
+                if (!mThumbnailURL.isEmpty()) {
+                    Picasso.with(getApplicationContext()).load(mThumbnailURL).into(mThumbnail);
                 }
 
                 newVideoPlayerFragment = new VideoPlayerFragment();
@@ -138,21 +154,23 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     protected void onSaveInstanceState(Bundle outState) {
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
             outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
+            outState.putString(getString(R.string.EXTRA_THUMB), mThumbnailURL);
             mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
             if (mMediaPosition != null) {
                 outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
             }
             outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
         }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
         Intent intent = new Intent(this, StepDetailActivity.class);
 
-        int index = clickedItemIndex -1;
+        int index = clickedItemIndex - 1;
 
-        Timber.d( "clicked item index is: " + index);
+        Timber.d("clicked item index is: %s", index);
 
         ArrayList<RecipeSteps> steps = mRecipe.getRecipeSteps();
         String position = "" + index;
@@ -171,7 +189,13 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     public void onListItemSelected(int position) {
 
-        Timber.d("Clicked item index is: " + position);
+        mThumbnailURL = mRecipe.getRecipeSteps().get(position-1).getThumbnailURL();
+
+        if (!mThumbnailURL.isEmpty()) {
+            Picasso.with(getApplicationContext()).load(mThumbnailURL).into(mThumbnail);
+        }
+
+        Timber.d("Clicked item index is: %s", position);
 
         mVideoFrame.setVisibility(View.VISIBLE);
 
@@ -204,6 +228,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Timber.d( "RecipeActivity Destroyed");
+        Timber.d("RecipeActivity Destroyed");
     }
 }

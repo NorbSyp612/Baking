@@ -13,6 +13,7 @@
     <string name="EXTRA_SIZE">extra_size</string>
     <string name="EXTRA_JSON_RESULT">json_result</string>
     <string name="EXTRA_JSON_POSITION">json_position</string>
+    <string name="EXTRA_THUMB">extra_thumb</string>
 
     <string name="BUNDLE_MPOSITION">bundle_mposition</string>
 
@@ -30,8 +31,6 @@
     <string name="VIDEO_FRAG_OUT_URI">video_frag_out_uri</string>
     <string name="VIDEO_FRAG_OUT_POSITION">video_frag_out_position</string>
     <string name="RECIPE_ACT_OUT_POSITION">recipe_act_out_position</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 
     <string name="BACK_FIRST_STEP">This is the first step</string>
     <string name="NEXT_FINAL_STEP">This is the final step</string>
