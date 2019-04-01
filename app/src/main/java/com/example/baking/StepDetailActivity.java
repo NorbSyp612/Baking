@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -46,6 +48,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private TextView mStepView;
+    private ImageView mThumbnail;
     private Button mBackButton;
     private Button mNextButton;
     private int mSize;
@@ -66,6 +69,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
         mBackButton = (Button) findViewById(R.id.button_back);
         mNextButton = (Button) findViewById(R.id.button_next);
 
+
         jsonParser = new JsonParser(getApplicationContext());
 
         Intent intent = getIntent();
@@ -82,12 +86,21 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
         recipe = jsonParser.parseJsonForRecipe(jsonResult, jsonPos);
         mRecipeSteps = recipe.getRecipeSteps();
 
+
+
         Timber.d("Size is %s", size);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.BUNDLE_MPOSITION))) {
             mPosition = savedInstanceState.getInt(getString(R.string.BUNDLE_MPOSITION));
         } else {
             mPosition = Integer.parseInt(position);
+        }
+
+        int phoneOrientation = getResources().getConfiguration().orientation;
+
+        if (!mRecipeSteps.get(mPosition).getThumbnailURL().isEmpty() && phoneOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            mThumbnail = (ImageView) findViewById(R.id.step_thumbnail);
+            Picasso.with(getApplicationContext()).load(mRecipeSteps.get(mPosition).getThumbnailURL()).into(mThumbnail);
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_POSITION))) {
