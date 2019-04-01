@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Li
     private String mJsonResult;
     private RecyclerView.LayoutManager layoutManager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
