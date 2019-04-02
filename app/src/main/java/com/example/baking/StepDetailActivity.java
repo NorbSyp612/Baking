@@ -136,6 +136,8 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
             if (mExoPlayer != null) {
                 releasePlayer();
             }
+
+            Timber.d("Starting new player");
             mPlayerView.setVisibility(View.VISIBLE);
             startPlayer(Uri.parse(mRecipeSteps.get(mPosition).getVideoURL()));
 
@@ -263,6 +265,7 @@ public class StepDetailActivity extends AppCompatActivity implements ExoPlayer.E
     protected void onDestroy() {
         super.onDestroy();
         if (mExoPlayer != null) {
+            Timber.d("Releaseing player");
             releasePlayer();
         }
     }

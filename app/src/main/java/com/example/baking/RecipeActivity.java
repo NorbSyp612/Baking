@@ -247,13 +247,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     protected void onPause() {
         super.onPause();
-        if (newVideoPlayerFragment != null) {
-            mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
+        if (getResources().getBoolean(R.bool.Tablet_Check)) {
+            if (newVideoPlayerFragment != null) {
+                mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
+            }
+            mFragmentManager.beginTransaction()
+                    .remove(newVideoPlayerFragment)
+                    .remove(newInstructionsFragment)
+                    .commit();
         }
-        mFragmentManager.beginTransaction()
-                .remove(newVideoPlayerFragment)
-                .remove(newInstructionsFragment)
-                .commit();
         Timber.d("OnPause");
     }
 
