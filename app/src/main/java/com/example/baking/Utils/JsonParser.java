@@ -31,7 +31,7 @@ public class JsonParser {
         mContext = context;
     }
 
-    public String getResult(){
+    public String getResult() {
         return result;
     }
 
@@ -76,6 +76,7 @@ public class JsonParser {
                 String recipeID = recipe.getString("id");
                 String recipeName = recipe.getString("name");
                 String recipeServings = recipe.getString("servings");
+                String recipeImageURL = recipe.getString("image");
 
                 JSONArray jIngredients = recipe.getJSONArray("ingredients");
                 for (int a = 0; a < jIngredients.length(); a++) {
@@ -116,6 +117,7 @@ public class JsonParser {
                 addRecipe.setId(recipeID);
                 addRecipe.setName(recipeName);
                 addRecipe.setServings(recipeServings);
+                addRecipe.setImage(recipeImageURL);
                 addRecipe.setRecipeIngredients(listOfIngredients);
                 addRecipe.setRecipeSteps(listOfSteps);
                 recipes.add(addRecipe);
@@ -140,55 +142,57 @@ public class JsonParser {
 
             JSONArray jRecipes = new JSONArray(jsonResult);
 
-                ArrayList<RecipeIngredients> listOfIngredients = new ArrayList<>();
-                ArrayList<RecipeSteps> listOfSteps = new ArrayList<>();
-                JSONObject recipe = jRecipes.getJSONObject(position);
+            ArrayList<RecipeIngredients> listOfIngredients = new ArrayList<>();
+            ArrayList<RecipeSteps> listOfSteps = new ArrayList<>();
+            JSONObject recipe = jRecipes.getJSONObject(position);
 
-                String recipeID = recipe.getString("id");
-                String recipeName = recipe.getString("name");
-                String recipeServings = recipe.getString("servings");
+            String recipeID = recipe.getString("id");
+            String recipeName = recipe.getString("name");
+            String recipeServings = recipe.getString("servings");
+            String recipeImageURL = recipe.getString("image");
 
-                JSONArray jIngredients = recipe.getJSONArray("ingredients");
-                for (int a = 0; a < jIngredients.length(); a++) {
-                    RecipeIngredients addIngredients = new RecipeIngredients();
-                    JSONObject ingredients = jIngredients.getJSONObject(a);
+            JSONArray jIngredients = recipe.getJSONArray("ingredients");
+            for (int a = 0; a < jIngredients.length(); a++) {
+                RecipeIngredients addIngredients = new RecipeIngredients();
+                JSONObject ingredients = jIngredients.getJSONObject(a);
 
-                    String quantity = ingredients.getString("quantity");
-                    String measure = ingredients.getString("measure");
-                    String ingredient = ingredients.getString("ingredient");
+                String quantity = ingredients.getString("quantity");
+                String measure = ingredients.getString("measure");
+                String ingredient = ingredients.getString("ingredient");
 
-                    addIngredients.setQuantity(quantity);
-                    addIngredients.setMeasure(measure);
-                    addIngredients.setIngredient(ingredient);
+                addIngredients.setQuantity(quantity);
+                addIngredients.setMeasure(measure);
+                addIngredients.setIngredient(ingredient);
 
-                    listOfIngredients.add(addIngredients);
-                }
+                listOfIngredients.add(addIngredients);
+            }
 
-                JSONArray jSteps = recipe.getJSONArray("steps");
-                for (int b = 0; b < jSteps.length(); b++) {
-                    RecipeSteps addSteps = new RecipeSteps();
-                    JSONObject steps = jSteps.getJSONObject(b);
+            JSONArray jSteps = recipe.getJSONArray("steps");
+            for (int b = 0; b < jSteps.length(); b++) {
+                RecipeSteps addSteps = new RecipeSteps();
+                JSONObject steps = jSteps.getJSONObject(b);
 
-                    String stepId = steps.getString("id");
-                    String shortDescrption = steps.getString("shortDescription");
-                    String descrption = steps.getString("description");
-                    String videoURL = steps.getString("videoURL");
-                    String thumbnailURL = steps.getString("thumbnailURL");
+                String stepId = steps.getString("id");
+                String shortDescrption = steps.getString("shortDescription");
+                String descrption = steps.getString("description");
+                String videoURL = steps.getString("videoURL");
+                String thumbnailURL = steps.getString("thumbnailURL");
 
-                    addSteps.setId(stepId);
-                    addSteps.setShortDescription(shortDescrption);
-                    addSteps.setDescription(descrption);
-                    addSteps.setVideoURL(videoURL);
-                    addSteps.setThumbnailURL(thumbnailURL);
+                addSteps.setId(stepId);
+                addSteps.setShortDescription(shortDescrption);
+                addSteps.setDescription(descrption);
+                addSteps.setVideoURL(videoURL);
+                addSteps.setThumbnailURL(thumbnailURL);
 
-                    listOfSteps.add(addSteps);
-                }
+                listOfSteps.add(addSteps);
+            }
 
-                addRecipe.setId(recipeID);
-                addRecipe.setName(recipeName);
-                addRecipe.setServings(recipeServings);
-                addRecipe.setRecipeIngredients(listOfIngredients);
-                addRecipe.setRecipeSteps(listOfSteps);
+            addRecipe.setId(recipeID);
+            addRecipe.setName(recipeName);
+            addRecipe.setServings(recipeServings);
+            addRecipe.setImage(recipeImageURL);
+            addRecipe.setRecipeIngredients(listOfIngredients);
+            addRecipe.setRecipeSteps(listOfSteps);
 
 
         } catch (JSONException e) {

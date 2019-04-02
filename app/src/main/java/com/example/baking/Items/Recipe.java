@@ -9,8 +9,17 @@ public class Recipe {
     private ArrayList<RecipeIngredients> recipeIngredients;
     private ArrayList<RecipeSteps> recipeSteps;
     private String servings;
+    private String image;
 
     public Recipe() {}
+
+    public void setImage(String ImageFromJson) {
+        image = ImageFromJson;
+    }
+
+    public String getImage() {
+        return image;
+    }
 
     public void setId(String IDFromJson) {
         id = IDFromJson;

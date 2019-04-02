@@ -118,6 +118,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 } else if (mMediaString.isEmpty()) {
                     Timber.d("mMediaString is empty on restore");
                 }
+                if (savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
+                    mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION));
+                }
                 if (savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
                     mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
                 }
@@ -142,6 +145,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 if (!mMediaString.isEmpty()) {
                     Timber.d("Restoring media string and fragment with uri: %s", mMediaString);
                     newVideoPlayerFragment.setMediaUri(Uri.parse(mMediaString));
+                    newVideoPlayerFragment.setPlayerPoisition(mMediaPosition);
                 } else {
                     Timber.d("Removing video fragment.");
                     mFragmentManager.beginTransaction()
@@ -166,8 +170,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
-            if (mMediaString != null && mMediaString.length() > 10) {
+            if (!mMediaString.isEmpty()) {
                 outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
+            }
+            if (mMediaPosition != null) {
+                outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
             }
             outState.putString(getString(R.string.EXTRA_THUMB), mThumbnailURL);
             outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
@@ -232,14 +239,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
             mFragmentManager.beginTransaction()
                     .remove(newVideoPlayerFragment)
                     .commit();
-           mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
-           mVideoFrame.setVisibility(View.GONE);
+            mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+            mVideoFrame.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (newVideoPlayerFragment != null) {
+            mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
+        }
         mFragmentManager.beginTransaction()
                 .remove(newVideoPlayerFragment)
                 .remove(newInstructionsFragment)

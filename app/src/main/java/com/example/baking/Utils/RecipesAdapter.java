@@ -11,10 +11,13 @@ import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeIngredients;
 import com.example.baking.Items.RecipeSteps;
 import com.example.baking.R;
+import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberViewHolder> {
@@ -85,6 +88,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
 
         TextView recipeItemview;
         TextView recipeIngredients;
+        ImageView recipeImageView;
 
         public NumberViewHolder(View itemView) {
 
@@ -92,6 +96,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
 
             if (fromMain) {
                 recipeItemview = (TextView) itemView.findViewById(R.id.recipe_item);
+                recipeImageView = (ImageView) itemView.findViewById(R.id.main_image);
                 itemView.setOnClickListener(this);
             } else {
                 recipeIngredients = (TextView) itemView.findViewById(R.id.recipe_ingreds);
@@ -107,8 +112,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.NumberVi
 
         void bind(int listIndex) {
 
+            Context context = itemView.getContext();
+
             if (fromMain) {
                 recipeItemview.setText(recipes.get(listIndex).getName());
+                if (recipes.get(listIndex).getImage().isEmpty()) {
+                    recipeImageView.setVisibility(View.GONE);
+                } else {
+                    Picasso.with(context).load(recipes.get(listIndex).getImage()).into(recipeImageView);
+                }
             } else {
                 String ingredientsString = "Ingredients: \n\n";
 
