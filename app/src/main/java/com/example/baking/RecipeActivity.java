@@ -22,11 +22,14 @@ import android.widget.ImageView;
 import com.example.baking.Items.Recipe;
 import com.example.baking.Items.RecipeSteps;
 import com.example.baking.Utils.JsonParser;
+import com.example.baking.Utils.NetworkUtils;
 import com.example.baking.Utils.RecipesAdapter;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.squareup.picasso.Picasso;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import timber.log.Timber;
@@ -55,6 +58,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         setContentView(R.layout.activity_recipe);
 
         mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+        mThumbnail = (ImageView) findViewById(R.id.instructions_thumbnail);
 
         Timber.d("On Create RecipeActivity");
 
@@ -75,14 +79,18 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
 
         if (savedInstanceState == null) {
             if (getResources().getBoolean(R.bool.Tablet_Check)) {
-
-                mThumbnail = (ImageView) findViewById(R.id.instructions_thumbnail);
                 Timber.d("TABLET FROM RECIPE ACTIVITY");
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
                 mFragmentManager = getSupportFragmentManager();
 
                 newVideoPlayerFragment = new VideoPlayerFragment();
                 newInstructionsFragment = new InstructionsFragment();
+
+                mMediaString = mRecipe.getRecipeSteps().get(0).getVideoURL();
+                mText = mRecipe.getRecipeSteps().get(0).getDescription();
+
+                newVideoPlayerFragment.setMediaUri(Uri.parse(mMediaString));
+                newInstructionsFragment.setInstructions(mText);
 
                 mFragmentManager.beginTransaction()
                         .add(R.id.exoplayer_container, newVideoPlayerFragment)
@@ -98,7 +106,53 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 mRecylerView.setHasFixedSize(true);
             }
         } else {
-            if (!getResources().getBoolean(R.bool.Tablet_Check)) {
+            if (getResources().getBoolean(R.bool.Tablet_Check)) {
+
+                Timber.d("Restoring instance state");
+
+                mMediaString = "";
+
+                if (savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
+                    mMediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
+                    Timber.d("Restored mMediaString: %s", mMediaString);
+                } else if (mMediaString.isEmpty()) {
+                    Timber.d("mMediaString is empty on restore");
+                }
+                if (savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
+                    mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
+                }
+
+                mFragmentManager = getSupportFragmentManager();
+
+                newVideoPlayerFragment = new VideoPlayerFragment();
+                newInstructionsFragment = new InstructionsFragment();
+
+                mFragmentManager.beginTransaction()
+                        .add(R.id.exoplayer_container, newVideoPlayerFragment)
+                        .commit();
+
+
+                if (!mText.isEmpty()) {
+                    newInstructionsFragment.setInstructions(mText);
+                    mFragmentManager.beginTransaction()
+                            .add(R.id.instructions_container, newInstructionsFragment)
+                            .commit();
+                }
+
+                if (!mMediaString.isEmpty()) {
+                    Timber.d("Restoring media string and fragment with uri: %s", mMediaString);
+                    newVideoPlayerFragment.setMediaUri(Uri.parse(mMediaString));
+                } else {
+                    Timber.d("Removing video fragment.");
+                    mFragmentManager.beginTransaction()
+                            .remove(newVideoPlayerFragment)
+                            .commit();
+                    mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+                    mVideoFrame.setVisibility(View.GONE);
+                }
+
+
+            } else {
                 mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(context);
                 mRecylerView.setLayoutManager(layoutManager);
@@ -112,7 +166,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
-            outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
+            if (mMediaString != null && mMediaString.length() > 10) {
+                outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
+            }
             outState.putString(getString(R.string.EXTRA_THUMB), mThumbnailURL);
             outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
         }
@@ -144,7 +200,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
     @Override
     public void onListItemSelected(int position) {
 
-        mThumbnailURL = mRecipe.getRecipeSteps().get(position-1).getThumbnailURL();
+        mThumbnailURL = mRecipe.getRecipeSteps().get(position - 1).getThumbnailURL();
+
 
         if (!mThumbnailURL.isEmpty()) {
             Picasso.with(getApplicationContext()).load(mThumbnailURL).into(mThumbnail);
@@ -171,14 +228,24 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 .commit();
 
         if (mMediaString.isEmpty()) {
+            Timber.d("Clicked position has empty media string");
             mFragmentManager.beginTransaction()
                     .remove(newVideoPlayerFragment)
                     .commit();
-            mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
-            mVideoFrame.setVisibility(View.GONE);
+           mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
+           mVideoFrame.setVisibility(View.GONE);
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFragmentManager.beginTransaction()
+                .remove(newVideoPlayerFragment)
+                .remove(newInstructionsFragment)
+                .commit();
+        Timber.d("OnPause");
+    }
 
     @Override
     protected void onDestroy() {
