@@ -98,54 +98,13 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
                 mRecylerView.setHasFixedSize(true);
             }
         } else {
-            if (getResources().getBoolean(R.bool.Tablet_Check)) {
-
-                mThumbnail = (ImageView) findViewById(R.id.instructions_thumbnail);
-                mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView3);
-                mFragmentManager = getSupportFragmentManager();
-
-                if (savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
-                    mMediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
-                }
-                if (savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_POSITION))) {
-                    mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
-                }
-                if (savedInstanceState.containsKey(getString(R.string.INSTRUC_FRAG_OUT_TEXT))) {
-                    mText = savedInstanceState.getString(getString(R.string.INSTRUC_FRAG_OUT_TEXT));
-                }
-
-                if (savedInstanceState.containsKey(getString(R.string.EXTRA_THUMB))) {
-                    mThumbnailURL = savedInstanceState.getString(getString(R.string.EXTRA_THUMB));
-                }
-
-                if (!mThumbnailURL.isEmpty()) {
-                    Picasso.with(getApplicationContext()).load(mThumbnailURL).into(mThumbnail);
-                }
-
-                newVideoPlayerFragment = new VideoPlayerFragment();
-                newInstructionsFragment = new InstructionsFragment();
-
-                if (!mMediaString.isEmpty()) {
-                    newVideoPlayerFragment.setMediaUri(Uri.parse(mMediaString));
-                    newVideoPlayerFragment.setPlayerPoisition(mMediaPosition);
-                }
-
-                if (!mText.isEmpty()) {
-                    newInstructionsFragment.setInstructions(mText);
-                }
-
-                mFragmentManager.beginTransaction()
-                        .add(R.id.exoplayer_container, newVideoPlayerFragment)
-                        .add(R.id.instructions_container, newInstructionsFragment)
-                        .commit();
-
-                if (mMediaString.isEmpty()) {
-                    mFragmentManager.beginTransaction()
-                            .remove(newVideoPlayerFragment)
-                            .commit();
-                    mVideoFrame = (FrameLayout) findViewById(R.id.exoplayer_container);
-                    mVideoFrame.setVisibility(View.GONE);
-                }
+            if (!getResources().getBoolean(R.bool.Tablet_Check)) {
+                mRecylerView = (RecyclerView) findViewById(R.id.recipe_RecyclerView2);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+                mRecylerView.setLayoutManager(layoutManager);
+                mRecipeAdapter = new RecipesAdapter(numberOfHolders, this, mRecipe);
+                mRecylerView.setAdapter(mRecipeAdapter);
+                mRecylerView.setHasFixedSize(true);
             }
         }
     }
@@ -155,10 +114,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipesAdapter.
         if (getResources().getBoolean(R.bool.Tablet_Check)) {
             outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaString);
             outState.putString(getString(R.string.EXTRA_THUMB), mThumbnailURL);
-            mMediaPosition = newVideoPlayerFragment.getPlayerPosition();
-            if (mMediaPosition != null) {
-                outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mMediaPosition);
-            }
             outState.putString(getString(R.string.INSTRUC_FRAG_OUT_TEXT), mText);
         }
         super.onSaveInstanceState(outState);

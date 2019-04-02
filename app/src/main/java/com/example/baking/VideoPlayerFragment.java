@@ -52,10 +52,10 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_video_player);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_POSITION)) && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.VIDEO_FRAG_OUT_URI))) {
             mMediaString = savedInstanceState.getString(getString(R.string.VIDEO_FRAG_OUT_URI));
             mMediaPosition = savedInstanceState.getLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), 0);
-            Timber.d("Restoring saved instance");
+            Timber.d("Restoring saved instance with video %s", mMediaString);
             mMediaUri = (Uri.parse(mMediaString));
         }
 
@@ -98,6 +98,8 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         if (mMediaUri != null) {
             outState.putString(getString(R.string.VIDEO_FRAG_OUT_URI), mMediaUri.toString());
             Timber.d("VideoFrag putting out: %s", mMediaUri);
+        } else {
+            Timber.d("VideoFrag mMediaUri is null, not putting out media string");
         }
         if (mExoPlayer != null) {
             outState.putLong(getString(R.string.VIDEO_FRAG_OUT_POSITION), mExoPlayer.getCurrentPosition());
